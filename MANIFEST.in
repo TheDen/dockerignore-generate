@@ -1,9 +1,9 @@
-nclude LICENSE
-include Makefile
+include *.md
 include *.rst
 include CHANGES.txt
-include *.md
 include LICENSE
-include CHANGES.md
+include LICENSE
+include Makefile
+include VERSION
 include requirements.txt
 recursive-include *.py
