@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import re
+import argparse
+
+
+def find_copied_files(linearray):
+    ignorelist = []
+    for i in linearray[1:-1]:
+        if os.path.isfile(i):
+            ignorelist.append(i)
+    return ignorelist
+
+
+def check_files(dockerfile):
+    if not os.path.exists(dockerfile):
+        print(f"{dockerfile} not found", file=sys.stderr)
+        sys.exit(1)
+    confirmed_files = []
+    for line in open(dockerfile):
+        if re.match("^COPY|^ADD", line):
+            confirmed_files += find_copied_files(line.split())
+    return confirmed_files
+
+
+def generate_dockerignore(dockerignore, context_dir_list, files_no_ignore):
+    f = open(dockerignore, "w")
+    f.close()
+    f = open(dockerignore, "a")
+    if context_dir_list:
+        f.write("# Ignore\n")
+        f = open(dockerignore, "a")
+        f.write("\n".join(context_dir_list))
+        f.write("\n")
+    if files_no_ignore:
+        f.write("\n# Don't ignore\n")
+        for i in files_no_ignore:
+            f.write(f"!{i}\n")
+    f.close()
+    print(f"wrote {os.path.relpath(dockerignore)}")
+
+
+def print_dockerignore(dockerignore, context_dir_list, files_no_ignore):
+    if context_dir_list:
+        print("# Ignore")
+        print("\n".join(context_dir_list))
+        print("")
+
+    if files_no_ignore:
+        print("# Don't ignore")
+        for i in files_no_ignore:
+            print(f"!{i}")
+
+
+def check_for_existing(dockerignore, overwrite):
+    if os.path.exists(dockerignore) and os.path.getsize(dockerignore) > 0:
+        if overwrite:
+            return True
+        else:
+            print('dockerignore already exists\nUse "--overwrite" to replace the file')
+            return False
+    else:
+        return True
+
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--context", dest="ctx", default=os.getcwd(), type=str)
+    parser.add_argument(
+        "-f", "--dockerfile", dest="dockerfile", default="Dockerfile", type=str
+    )
+    parser.add_argument(
+        "--overwrite", dest="overwrite", default=False, action="store_true"
+    )
+    parser.add_argument(
+        "-s",
+        "--save-dockerfile",
+        dest="save_dockerignore",
+        default=False,
+        action="store_true",
+    )
+
+    args = parser.parse_args()
+
+    ctx = os.path.abspath(args.ctx)
+    dockerfile = args.dockerfile
+
+    context_dir_list = os.listdir(ctx)
+
+    files_no_ignore = []
+    files_no_ignore = check_files("Dockerfile")
+
+    dockerignore = ctx + "/.dockerignore"
+    if args.save_dockerignore:
+        if check_for_existing(dockerignore, args.overwrite):
+            generate_dockerignore(dockerignore, context_dir_list, files_no_ignore)
+    else:
+        print_dockerignore(dockerignore, context_dir_list, files_no_ignore)
+
+    sys.exit(0)
