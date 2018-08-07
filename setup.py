@@ -1,5 +1,6 @@
 from setuptools import setup
 import codecs
+import os
 
 try:
     f = codecs.open("README.rst", encoding="utf-8")
@@ -8,9 +9,11 @@ try:
 except:
     long_description = ""
 
+version_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "VERSION")
+
 setup(
     name="dockerignore-generate",
-    version="1.0.0",
+    version=open(version_file).read().rstrip(),
     author="Denis Khshaba",
     author_email="deniskhoshaba@gmail.com",
     scripts=["dockerignore-generate"],
