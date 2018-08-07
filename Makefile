@@ -14,3 +14,6 @@ clean:
 	git clean -fdx
 .PHONY: clean
 
+install:
+	python3 setup.py install
+.PHONY: install
