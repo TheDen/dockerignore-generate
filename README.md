@@ -1,6 +1,6 @@
 # dockerignore-generate
 
-Python 3 cli tool to automatically generate `.dockerignore` files
+Python (`>=3.6`) cli tool to automatically generate `.dockerignore` files
 
 ## Install
 
@@ -13,7 +13,7 @@ pip install dockerignore-generate
 In a directory with a `Dockerfile`
 
 ```bash
-dockerignore-generate 
+dockerignore-generate
 ```
 
 will print out the contents of the generated `.dockerignore` file. Without arguments the docker build context is assumed to be the curret working directory.

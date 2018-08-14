@@ -3,7 +3,7 @@ build:
 .PHONY: build
 
 publish:
-	twine upload dist/* --skip-existing
+	twine upload dist/* --skip-existing -s
 .PHONY: publish
 
 convert:
