@@ -1,3 +1,4 @@
-1.0.2, 07-08-2018 -- fix manifest file
-1.0.1, 07-08-2018 -- fix install script
+1.0.3, 07-08-2018 -- fixed context parsing and docker flags
+1.0.2, 07-08-2018 -- fixed manifest file
+1.0.1, 07-08-2018 -- fixed install script
 1.0.0, 07-08-2018 -- initial release

@@ -9,7 +9,7 @@ import argparse
 def find_copied_files(linearray):
     ignorelist = []
     for i in linearray[1:-1]:
-        if os.path.isfile(i):
+        if os.path.isfile(f"{ctx}/{i}"):
             ignorelist.append(i)
     return ignorelist
 
@@ -59,7 +59,9 @@ def check_for_existing(dockerignore, overwrite):
         if overwrite:
             return True
         else:
-            print('dockerignore already exists\nUse "--overwrite" to replace the file')
+            print(
+                'dockerignore already exists\nUse "-o" or "--overwrite" to replace the file'
+            )
             return False
     else:
         return True
@@ -73,7 +75,7 @@ if __name__ == "__main__":
         "-f", "--dockerfile", dest="dockerfile", default="Dockerfile", type=str
     )
     parser.add_argument(
-        "--overwrite", dest="overwrite", default=False, action="store_true"
+        "-o", "--overwrite", dest="overwrite", default=False, action="store_true"
     )
     parser.add_argument(
         "-s",
@@ -91,7 +93,7 @@ if __name__ == "__main__":
     context_dir_list = os.listdir(ctx)
 
     files_no_ignore = []
-    files_no_ignore = check_files("Dockerfile")
+    files_no_ignore = check_files(dockerfile)
 
     dockerignore = ctx + "/.dockerignore"
     if args.save_dockerignore:
